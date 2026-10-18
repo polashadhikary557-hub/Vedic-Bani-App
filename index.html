@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube AI Team</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white p-4 max-w-md mx-auto min-h-screen">
+  <h1 class="text-lg font-bold text-red-500 mb-3">🎬 YouTube AI Studio</h1>
+  <textarea id="topic" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white" rows="3" placeholder="ভিডিওর বিষয় লিখুন..."></textarea>
+  <button id="btn" onclick="runApp()" class="w-full bg-red-600 font-bold py-3 mt-3 rounded-lg active:scale-95 transition">স্ক্রিপ্ট ও প্যাকেজ তৈরি করুন</button>
+  <div id="loader" class="hidden text-center text-xs text-yellow-400 mt-3 font-semibold">AI তৈরি করছে, অনুগ্রহ করে অপেক্ষা করুন...</div>
+  <pre id="output" class="mt-4 p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs whitespace-pre-wrap max-h-96 overflow-y-auto"></pre>
+  <script>
+    async function runApp(){
+      const t = document.getElementById('topic').value;
+      if(!t) return alert('টপিক লিখুন');
+      document.getElementById('loader').classList.remove('hidden');
+      document.getElementById('output').textContent = '';
+      try {
+        const res = await fetch('/api/generate', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({topic:t}) });
+        const d = await res.json();
+        document.getElementById('output').textContent = d.result || d.error;
+      } catch(e){ document.getElementById('output').textContent = 'Error: ' + e.message; }
+      document.getElementById('loader').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
